@@ -1,6 +1,6 @@
+import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/widgets/chat_messages.dart';
 import 'package:chat_app/widgets/new_message.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  void setUpNotification() async { 
+  void setUpNotification() async {
     final fcm = FirebaseMessaging.instance;
     await fcm.requestPermission();
 
@@ -36,7 +36,12 @@ class _ChatScreenState extends State<ChatScreen> {
             actions: [
               IconButton(
                 onPressed: () {
-                  FirebaseAuth.instance.signOut();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.logout),
               ),

@@ -1,3 +1,4 @@
+import 'package:chat_app/auth/auth_gate.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -28,7 +29,14 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward(); // Start the animation
 
     // Navigate after 3 seconds
-    Timer(const Duration(seconds: 3), () {});
+    Timer(const Duration(seconds: 3), () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AuthGate(),
+        ),
+      );
+    });
   }
 
   @override

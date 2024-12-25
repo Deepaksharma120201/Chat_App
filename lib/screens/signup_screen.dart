@@ -1,13 +1,7 @@
-import 'dart:io';
+import 'package:chat_app/auth/auth_service.dart';
 import 'package:chat_app/screens/login_screen.dart';
-import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/widgets/custom_text_field.dart';
-import 'package:chat_app/widgets/image_picker.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-final _firebase = FirebaseAuth.instance;
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -18,60 +12,28 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  var _username = '';
-  var _email = '';
-  var _password = '';
-  File? _pickedImage;
-  var _isLoading = false;
+  void _register(BuildContext context) async {
+    final authSerive = AuthService();
 
-  void _submit() async {
-    final isValid = formKey.currentState!.validate();
-    if (!isValid || _pickedImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Image field is Empty!!'),
-        ),
-      );
-      return;
-    }
-    formKey.currentState!.save();
-
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-      final userCredential = await _firebase.createUserWithEmailAndPassword(
-        email: _email,
-        password: _password,
-      );
-
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set({
-        'username': _username,
-        'email': _email,
-      });
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const ChatScreen(),
-        ),
-      );
-    } on FirebaseAuthException catch (error) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              error.message ?? 'Authentication failed',
-            ),
-          ),
+    if (_passwordController.text == _confirmPasswordController.text) {
+      try {
+        await authSerive.signUpWithEmail(
+            _emailController.text, _passwordController.text);
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(e.toString()),
+            );
+          },
         );
       }
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
@@ -86,47 +48,26 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  margin: const EdgeInsets.only(
-                    top: 30,
-                    bottom: 20,
-                    left: 20,
-                    right: 20,
-                  ),
-                  width: 200,
-                  child: Image.asset('assets/images/chat.png'),
+                const Icon(
+                  Icons.message,
+                  size: 60,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 40),
+                const Text(
+                  "Let's create an account for you",
+                  style: TextStyle(fontSize: 20),
                 ),
                 Card(
                   margin: const EdgeInsets.all(20),
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       child: Form(
                         key: formKey,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            UserImagePicker(
-                              onPickImage: (pickedImage) {
-                                _pickedImage = pickedImage;
-                              },
-                            ),
-                            const SizedBox(height: 15),
-                            CustomTextField(
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please fill this field!';
-                                } else if (value.length < 4) {
-                                  return 'Name must be at least 2 characters long';
-                                }
-                                return null;
-                              },
-                              label: 'Username',
-                              hintText: 'Enter name',
-                              keyboard: TextInputType.emailAddress,
-                              onSaved: (newValue) => _username = newValue,
-                            ),
-                            const SizedBox(height: 15),
                             CustomTextField(
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -139,10 +80,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                 }
                                 return null;
                               },
-                              label: 'Email Address',
+                              label: 'Email',
                               hintText: 'Enter Email',
                               keyboard: TextInputType.emailAddress,
-                              onSaved: (val) => _email = val,
+                              controller: _emailController,
                             ),
                             const SizedBox(height: 15),
                             CustomTextField(
@@ -157,15 +98,28 @@ class _SignupScreenState extends State<SignupScreen> {
                               label: 'Password',
                               hintText: 'Enter password',
                               keyboard: TextInputType.text,
-                              onSaved: (val) => _password = val,
+                              controller: _passwordController,
+                            ),
+                            const SizedBox(height: 15),
+                            CustomTextField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please fill this field!';
+                                } else if (value.length < 4) {
+                                  return 'Name must be at least 2 characters long';
+                                }
+                                return null;
+                              },
+                              label: 'Confirm Password',
+                              hintText: 'Confirm Password',
+                              keyboard: TextInputType.visiblePassword,
+                              controller: _confirmPasswordController,
                             ),
                             const SizedBox(height: 20),
-                            if (_isLoading) const CircularProgressIndicator(),
-                            if (!_isLoading)
-                              ElevatedButton(
-                                onPressed: _submit,
-                                child: const Text('Create Your Account'),
-                              ),
+                            ElevatedButton(
+                              onPressed: () => _register(context),
+                              child: const Text('Create Your Account'),
+                            ),
                             const SizedBox(height: 30),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,

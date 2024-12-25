@@ -1,6 +1,3 @@
-import 'package:chat_app/screens/login_screen.dart';
-import 'package:chat_app/screens/chat_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:chat_app/screens/splash_screen.dart';
@@ -21,19 +18,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'ChatEngine',
       theme: theme,
-      home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (ctx, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SplashScreen();
-          } else if (snapshot.hasData) {
-            return const ChatScreen();
-          }
-          return const LoginScreen();
-        },
-      ),
+      home: const SplashScreen(),
     );
   }
 }

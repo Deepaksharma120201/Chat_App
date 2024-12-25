@@ -36,6 +36,7 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(25),
         ),
       ),
+      controller: controller,
       obscureText: obscureText ?? false,
       keyboardType: keyboard,
       autocorrect: false,
