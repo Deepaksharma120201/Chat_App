@@ -1,4 +1,5 @@
-import 'package:chat_app/auth/auth_service.dart';
+import 'package:chat_app/services/auth/auth_service.dart';
+import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/screens/login_screen.dart';
 import 'package:chat_app/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,11 @@ class _SignupScreenState extends State<SignupScreen> {
       try {
         await authSerive.signUpWithEmail(
             _emailController.text, _passwordController.text);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
       } catch (e) {
         showDialog(
           context: context,
