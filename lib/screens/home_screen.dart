@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
         stream: _chatService.getUserStream(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Text('Something goes wrong!');
+            return const Center(child: Text('Something goes wrong!'));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -54,6 +54,7 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => ChatScreen(
                 receiverEmail: userData["email"],
+                receiverId: userData["uid"],
               ),
             ),
           );

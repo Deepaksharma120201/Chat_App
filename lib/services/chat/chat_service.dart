@@ -42,19 +42,19 @@ class ChatService {
     await _firestore
         .collection("chat_rooms")
         .doc(chatRoomId)
-        .collection("messages")
+        .collection("message")
         .add(newMessage.toMap());
   }
 
   // get message
-  Stream<QuerySnapshot> getMessage(String useId, String otheUserId) {
-    List<String> ids = [useId, otheUserId];
+  Stream<QuerySnapshot> getMessage(String userId, String otheUserId) {
+    List<String> ids = [userId, otheUserId];
     ids.sort();
     String chatRoomId = ids.join('_');
     return _firestore
         .collection("chat_rooms")
         .doc(chatRoomId)
-        .collection("messages")
+        .collection("message")
         .orderBy("timestamp", descending: false)
         .snapshots();
   }

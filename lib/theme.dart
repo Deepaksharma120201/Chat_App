@@ -11,7 +11,7 @@ var theme = ThemeData(
   scaffoldBackgroundColor: kColorScheme.onPrimaryContainer,
 
   // Enhanced text theme with Google Fonts
-  textTheme: TextTheme( 
+  textTheme: TextTheme(
     bodyLarge: GoogleFonts.openSans(
       fontSize: 16,
       fontWeight: FontWeight.w400,
@@ -85,7 +85,7 @@ var theme = ThemeData(
   // Input Decoration theme for TextFormFields
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(6),
     ),
     enabledBorder: OutlineInputBorder(
       borderSide:
