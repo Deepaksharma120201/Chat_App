@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('Users'),
       ),
       drawer: const MyDrawer(),
       body: StreamBuilder(
